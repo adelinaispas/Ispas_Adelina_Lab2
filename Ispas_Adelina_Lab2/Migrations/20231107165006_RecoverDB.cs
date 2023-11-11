@@ -1,18 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Ispas_Adelina_Lab2.Migrations
 {
-    public partial class BookCategory : Migration
+    public partial class RecoverDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "PublisherID",
-                table: "Book",
-                type: "int",
-                nullable: true);
+            migrationBuilder.CreateTable(
+                name: "Author",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuthorName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Author", x => x.ID);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Category",
@@ -38,6 +46,33 @@ namespace Ispas_Adelina_Lab2.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Publisher", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Book",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PublishingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PublisherID = table.Column<int>(type: "int", nullable: true),
+                    AuthorID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Book", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Book_Author_AuthorID",
+                        column: x => x.AuthorID,
+                        principalTable: "Author",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_Book_Publisher_PublisherID",
+                        column: x => x.PublisherID,
+                        principalTable: "Publisher",
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -67,6 +102,11 @@ namespace Ispas_Adelina_Lab2.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Book_AuthorID",
+                table: "Book",
+                column: "AuthorID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Book_PublisherID",
                 table: "Book",
                 column: "PublisherID");
@@ -80,37 +120,24 @@ namespace Ispas_Adelina_Lab2.Migrations
                 name: "IX_BookCategory_CategoryID",
                 table: "BookCategory",
                 column: "CategoryID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Book_Publisher_PublisherID",
-                table: "Book",
-                column: "PublisherID",
-                principalTable: "Publisher",
-                principalColumn: "ID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Book_Publisher_PublisherID",
-                table: "Book");
-
             migrationBuilder.DropTable(
                 name: "BookCategory");
 
             migrationBuilder.DropTable(
-                name: "Publisher");
+                name: "Book");
 
             migrationBuilder.DropTable(
                 name: "Category");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Book_PublisherID",
-                table: "Book");
+            migrationBuilder.DropTable(
+                name: "Author");
 
-            migrationBuilder.DropColumn(
-                name: "PublisherID",
-                table: "Book");
+            migrationBuilder.DropTable(
+                name: "Publisher");
         }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ispas_Adelina_Lab2.Migrations
 {
     [DbContext(typeof(Ispas_Adelina_Lab2Context))]
-    [Migration("20231024145145_BookCategory")]
-    partial class BookCategory
+    [Migration("20231107165006_RecoverDB")]
+    partial class RecoverDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,6 +24,23 @@ namespace Ispas_Adelina_Lab2.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Ispas_Adelina_Lab2.Models.Author", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Author");
+                });
+
             modelBuilder.Entity("Ispas_Adelina_Lab2.Models.Book", b =>
                 {
                     b.Property<int>("ID")
@@ -32,12 +49,11 @@ namespace Ispas_Adelina_Lab2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("AuthorID")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(6,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("PublisherID")
                         .HasColumnType("int");
@@ -50,6 +66,8 @@ namespace Ispas_Adelina_Lab2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("AuthorID");
 
                     b.HasIndex("PublisherID");
 
@@ -115,9 +133,15 @@ namespace Ispas_Adelina_Lab2.Migrations
 
             modelBuilder.Entity("Ispas_Adelina_Lab2.Models.Book", b =>
                 {
+                    b.HasOne("Ispas_Adelina_Lab2.Models.Author", "Author")
+                        .WithMany("Books")
+                        .HasForeignKey("AuthorID");
+
                     b.HasOne("Ispas_Adelina_Lab2.Models.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherID");
+
+                    b.Navigation("Author");
 
                     b.Navigation("Publisher");
                 });
@@ -139,6 +163,11 @@ namespace Ispas_Adelina_Lab2.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Ispas_Adelina_Lab2.Models.Author", b =>
+                {
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("Ispas_Adelina_Lab2.Models.Book", b =>
