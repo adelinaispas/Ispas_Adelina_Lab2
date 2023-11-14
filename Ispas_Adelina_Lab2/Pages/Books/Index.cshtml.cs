@@ -20,15 +20,14 @@ namespace Ispas_Adelina_Lab2.Pages.Books
         }
 
         public IList<Book> Book { get; set; } = default!;
-        public BookData? BookD { get; set; }
+        public BookData BookD { get; set; }
         public int BookID { get; set; }
         public int CategoryID { get; set; }
         public string TitleSort { get; set; }
         public string AuthorSort { get; set; }
         public string CurrentFilter { get; set; }
 
-        public async Task OnGetAsyncc(int? id, int? categoryID, string sortOrder, string
-searchString)
+        public async Task OnGetAsync(int? id, int? categoryID, string sortOrder, string searchString)
         {
             BookD = new BookData();
             TitleSort = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
