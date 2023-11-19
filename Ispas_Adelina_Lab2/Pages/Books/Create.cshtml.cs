@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Ispas_Adelina_Lab2.Data;
 using Ispas_Adelina_Lab2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ispas_Adelina_Lab2.Pages.Books
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : BookCategoriesPageModel
     {
         private readonly Ispas_Adelina_Lab2.Data.Ispas_Adelina_Lab2Context _context;
